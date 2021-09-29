@@ -1,35 +1,18 @@
 import * as _http from "http";
-import * as _url from "url";
-import * as _fs from "fs";
-let HEADERS=require("headers.json");
-let paginaErrore:string;
+import { json } from "stream/consumers";
+let HEADERS=require("./headers.json");
+let dispatcher=require("./dispatcher.ts");
+let port:number=1337;
+let server=_http.createServer(function(req,res){
+    dispatcher.dispatch(req,res);
+})
+server.listen(port);
+console.log("Server in ascolto sulla porta "+port);
 
-class Dispatcher{
-    prompt:string=">>>";
-    //ogni listener è costituito da un json del tipo
-    //{"risorsa":"callback"}
-    //i listeners sono suddivisi in base al tipo di chiamata
-    listeners:any={
-        "GET":{},
-        "POST":{},
-        "DELETE":{},
-        "PUT":{},
-        "PATCH":{}
-    }
-    constructor(){
-
-    }
-
-    addListener(metodo:string,risorsa:string,callback:any){
-        metodo=metodo.toLocaleUpperCase();
-        /*if(this.listeners[metodo]){
-
-        }*/
-        if(metodo in this.listeners){
-            this.listeners[metodo][risorsa]=callback;
-        }
-        else{
-          throw new Error("metodo non valido");
-        }
-    }
-}
+//registrazione dei servizi
+dispatcher.addListener("POST","/api/servizio1",function(req,res){
+    res.writeHead(200,HEADERS.json);
+    //quando c'è solo una write si può mettere nell'end
+    res.write(JSON.stringify({"ris":"ok"}))
+    res.end();
+})
