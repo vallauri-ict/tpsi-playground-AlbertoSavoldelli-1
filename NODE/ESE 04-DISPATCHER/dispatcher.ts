@@ -2,6 +2,7 @@ import * as _http from "http";
 import * as _url from "url";
 import * as _fs from "fs";
 import * as _mime from "mime";
+import * as _querystring from "query-string";
 let HEADERS=require("./headers.json");
 let paginaErrore:string;
 
@@ -33,33 +34,57 @@ class Dispatcher{
           throw new Error("metodo non valido");
         }
     }
-
     dispatch(req,res){
-        let metodo= req.method;
-        let url=_url.parse(req.url,true)
-        let risorsa= url.pathname;
-        let parametri=url.query;
-
-        console.log(`${this.prompt} ${metodo}:${risorsa}:${JSON.stringify(parametri)}`)
-
-        if(risorsa.startsWith("/api/")){
-            if(risorsa in this.listeners[metodo]){
-                let _callback=this.listeners[metodo][risorsa];
-                _callback(req,res); //lancio in esecuzione la callback
-            }
-            else{
-                //il client si aspetta un json
-                //in caso di errore gli possiamo passare una stringa al posto del json
-                res.writeHead(404,HEADERS.text);
-                res.write("Servizio non trovato");
-                res.end();
-            }
+        let metodo=req.method.toUpperCase();
+        if(metodo="GET"){
+            innerDispatch(req,res);
         }
         else{
-            staticListener(req,res,risorsa);
+            let parametriBody:string="";
+            req.on("data",function(data){
+                parametriBody+=data;
+            })
+            let parametriJson={};
+            req.on("end",function(){
+                //se i parametri sono json la conversione va a buon fine
+                //altrimenti sono URL-ENCODED
+                try{
+                    parametriJson=JSON.parse(parametriBody);
+                }
+                catch(error){
+                    parametriJson=_querystring.parse(parametriBody);
+                }
+            })
         }
     }
+
 }
+function innerDispatch(req,res){
+    let metodo= req.method;
+    let url=_url.parse(req.url,true)
+    let risorsa= url.pathname;
+    let parametri=url.query;
+    req["GET"]=parametri;
+    console.log(`${this.prompt} ${metodo}:${risorsa}:${JSON.stringify(parametri)}`)
+
+    if(risorsa.startsWith("/api/")){
+        if(risorsa in this.listeners[metodo]){
+            let _callback=this.listeners[metodo][risorsa];
+            _callback(req,res); //lancio in esecuzione la callback
+        }
+        else{
+            //il client si aspetta un json
+            //in caso di errore gli possiamo passare una stringa al posto del json
+            res.writeHead(404,HEADERS.text);
+            res.write("Servizio non trovato");
+            res.end();
+        }
+    }
+    else{
+        staticListener(req,res,risorsa);
+    }
+}
+
 function staticListener(req,res,risorsa){
     if(risorsa=="/"){
         risorsa="/index.html";
@@ -81,6 +106,7 @@ function staticListener(req,res,risorsa){
         }
     })
 }
+
 function init(){
     _fs.readFile("./static/error.html",function(err,data){
         if(!err){

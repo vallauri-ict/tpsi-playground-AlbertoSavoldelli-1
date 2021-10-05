@@ -16,3 +16,10 @@ dispatcher.addListener("POST","/api/servizio1",function(req,res){
     res.write(JSON.stringify({"ris":"ok"}))
     res.end();
 })
+
+dispatcher.addListener("GET","/api/servizio2",function(req,res){
+    res.writeHead(200,HEADERS.json);
+    let nome=req["GET"].nome;
+    res.write(JSON.stringify({"ris":nome}))
+    res.end();
+})
