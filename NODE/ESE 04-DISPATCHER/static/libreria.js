@@ -1,7 +1,5 @@
 "use strict";
 
-const PHP = true
-
 function inviaRichiesta(method, url, parameters={}) {
 	let contentType;
 	if(method.toUpperCase()=="GET")

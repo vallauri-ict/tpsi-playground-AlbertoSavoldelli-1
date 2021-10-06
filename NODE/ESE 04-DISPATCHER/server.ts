@@ -13,7 +13,8 @@ console.log("Server in ascolto sulla porta "+port);
 dispatcher.addListener("POST","/api/servizio1",function(req,res){
     res.writeHead(200,HEADERS.json);
     //quando c'è solo una write si può mettere nell'end
-    res.write(JSON.stringify({"ris":"ok"}))
+    let nome=req["BODY"].nome;
+    res.write(JSON.stringify({"ris":nome,"id":req["GET"].id}))
     res.end();
 })
 
