@@ -24,3 +24,22 @@ dispatcher.addListener("GET","/api/nazioni",function(req,res){
     res.write(JSON.stringify({"nazioni":nazioni}));
     res.end();
 })
+
+dispatcher.addListener("GET","/api/persone",function(req,res){
+    let nazione:string=req["GET"].nazione;
+    let vetPersons:object[]=[];
+    for (const person of persons.results) {
+        if(person.location.country==nazione){
+            let jsonPerson:object={
+                "name":person.name.title+" "+person.name.first+" "+person.name.last,
+                "city":person.location.city,
+                "state":person.location.state,
+                "cell":person.cell
+            };
+            vetPersons.push(jsonPerson);
+        }
+    }
+    res.writeHead(200,HEADERS.json);
+    res.write(JSON.stringify(vetPersons));
+    res.end();
+})
