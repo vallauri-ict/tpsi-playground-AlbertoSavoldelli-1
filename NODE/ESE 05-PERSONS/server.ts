@@ -1,9 +1,12 @@
 import * as _http from "http";
 import { json } from "stream/consumers";
-let HEADERS=require("./headers.json");
-let dispatcher=require("./dispatcher.ts");
-let persons=require("./persons.json");
+import {HEADERS} from "./headers";
+import {Dispatcher} from "./dispatcher";
+import {persons} from "./persons";
 let port:number=1337;
+
+let dispatcher:Dispatcher=new Dispatcher();
+
 let server=_http.createServer(function(req,res){
     dispatcher.dispatch(req,res);
 })

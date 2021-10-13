@@ -1,5 +1,4 @@
-
-{
+export const HEADERS={
     "text": { "Content-Type": "text/plain;charset=utf-8" },
     "html": { "Content-Type": "text/html;charset=utf-8" },
     "js":   { "Content-Type": "application/javascript;charset=utf-8" },

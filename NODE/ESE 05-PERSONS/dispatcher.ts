@@ -3,10 +3,10 @@ import * as _url from "url";
 import * as _fs from "fs";
 import * as _mime from "mime";
 import * as _querystring from "query-string";
-let HEADERS=require("./headers.json");
+import {HEADERS} from "./headers";
 let paginaErrore:string;
 
-class Dispatcher{
+export class Dispatcher{
     prompt:string=">>>";
     //ogni listener è costituito da un json del tipo
     //{"risorsa":"callback"}
@@ -125,4 +125,3 @@ function init(){
         }
     });      
 }
-module.exports= new Dispatcher();
