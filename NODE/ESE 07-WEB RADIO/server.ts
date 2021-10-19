@@ -1,44 +1,65 @@
-import * as _fs from "fs";
+import * as _http from "http";
 import { json } from "stream/consumers";
 import HEADERS from "./headers.json";
 import {Dispatcher} from "./dispatcher";
-
-
-//Lettura file radios e states
+import states from "./states.json";
 import radios from "./radios.json";
+import * as _fs from "fs";
+let port:number=1337;
+let dispatcher:Dispatcher=new Dispatcher();
+let server=_http.createServer(function(req,res){
+    dispatcher.dispatch(req,res);
+})
+server.listen(port);
+console.log("Server in ascolto sulla porta "+port);
 
-//in alternativa posso usare readFile--> Es nell'es 6 news dove devo leggere il file aggiornato
-_fs.readFile("./states.json",function(err,data){
-    if(err){
-        console.error(err);
-        return;
-    }
-    else{
-        //console.log(data.toString()); //data è il contenuto del file espresso in forma binaria
-        //se il file è un testo è necessario eseguire un toString finale
-        elabora(JSON.parse(data.toString()));
-    }
+//*******************************************
+//*****REGISTRAZIONE DEI SERVIZI*****
+dispatcher.addListener("GET","/api/elenco",function(req,res){
+    res.writeHead(200,HEADERS.json);
+    res.write(JSON.stringify(states));
+    res.end();
 })
 
-function elabora(states){
-    for (const state of states) {
+dispatcher.addListener("POST","/api/radios",function(req,res){
+    let regione=req["BODY"].regione;
+    let radioRegione=[];
+    if(regione!="tutti"){
         for (const radio of radios) {
-            if(radio.state==state.value){
-                //non posso fare ++ perchè è string
-                state.stationCount=parseInt(state.stationCount)+1;
-                state.stationCount=(state.stationCount).toString();
+            if(radio.state==regione){
+                radioRegione.push(radio)
             }
         }
     }
-    //salvo su disco
-    _fs.writeFile("./states.json",JSON.stringify(states),function(err){
-        if(err){
-            console.log(err.message);
-            return;
+    else{
+        for (const radio of radios) {
+                radioRegione.push(radio)
         }
-        else{
-            /*nodemon --ignore 'states.json'*/
-            console.log("file salvato correttamente");
+    }
+    res.writeHead(200,HEADERS.json);
+    res.write(JSON.stringify(radioRegione));
+    res.end();
+})
+
+dispatcher.addListener("POST","/api/like",function(req,res){
+    let idLike=req["BODY"].id;
+    for (const radio of radios) {
+        if(radio.id==idLike){
+            let nLike = parseInt(radio.votes);
+            nLike++;
+            radio.votes = nLike.toString();
+            _fs.writeFile("./radios.json",JSON.stringify(radios),function(err){
+                if(err){
+                    res.writeHead(404, HEADERS.text);
+                    res.write(err);
+                }
+                else{
+                    res.writeHead(200, HEADERS.json);
+                    res.write(JSON.stringify(radio.votes));
+                }
+                res.end();
+            })
+            break;
         }
-    })
-}
+    }
+})
