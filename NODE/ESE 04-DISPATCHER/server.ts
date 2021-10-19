@@ -1,6 +1,6 @@
 import * as _http from "http";
 import { json } from "stream/consumers";
-import {HEADERS} from "./headers";
+import HEADERS from "./headers.json";
 import {Dispatcher} from "./dispatcher";
 let port:number=1337;
 let dispatcher:Dispatcher=new Dispatcher();
