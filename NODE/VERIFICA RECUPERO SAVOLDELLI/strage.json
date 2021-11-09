@@ -1,0 +1,237 @@
+[{
+        "argomento": "Geografia",
+        "domande": [{
+                "id": 1,
+                "domanda": "New York è la capitale degli USA",
+                "risposta": "F",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 2,
+                "domanda": "San Diego si trova in Messico",
+                "risposta": "F",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 3,
+                "domanda": "Il sacrario militare Redipuglia si trova in Friuli",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 4,
+                "domanda": "Il Monviso è il più alto monte italiano",
+                "risposta": "F",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 5,
+                "domanda": "Hong Kong fa perte della Repubblica Popolare Cinese",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 6,
+                "domanda": "Taiwan fa perte della Repubblica Popolare Cinese",
+                "risposta": "F",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 7,
+                "domanda": "Lubiana è la capitale della Slovenia",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 8,
+                "domanda": "La Slovenia ha un accesso al mare",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 9,
+                "domanda": "Gli stati membri dell'Unione Europea sono attualmente 28",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 10,
+                "domanda": "Le tre sedi del parlamento europeo sono Bruxelles, Strasburgo e Lussemburgo",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 11,
+                "domanda": "La capitale della Croazia è Zagabria",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            }
+        ]
+    },
+    {
+        "argomento": "Matematica",
+        "domande": [{
+                "id": 12,
+                "domanda": "15*5 = 75",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 13,
+                "domanda": "Se 5x = 10; x = 2",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 14,
+                "domanda": "Se 7x = 42; x = 7",
+                "risposta": "F",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 15,
+                "domanda": "3x2 + 5x +1 ha due soluzioni reali",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 16,
+                "domanda": "4x2 + 4x +1 ha due soluzioni reali",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 17,
+                "domanda": "5x2 + 3x +1 ha due soluzioni reali",
+                "risposta": "F",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 18,
+                "domanda": "ax2 +bx +c può essere l'equazione di una circonferenza",
+                "risposta": "F",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 19,
+                "domanda": "x2/a2 + y2/b2 = 1 può essere l'equazione di una iperbole",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 20,
+                "domanda": "La probabilità di trovare un asso su un mazzo di 52 carte è circa il 7,5%",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 21,
+                "domanda": "La probabilità di trovare un jolly su un mazzo di 54 carte è circa il 7,5%",
+                "risposta": "F",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            }
+        ]
+    },
+    {
+        "argomento": "Storia",
+        "domande": [{
+                "id": 22,
+                "domanda": "Data dell'armistizio con gli Alleati: 8 settembre 1943 ",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 23,
+                "domanda": "Data della Liberazione di Roma : 4 giugno 1944 ",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 24,
+                "domanda": "Data della Liberazione di Auschwitz (Giorno della Memoria): 27 gennaio 1945 ",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 25,
+                "domanda": "Data della Liberazione di Milano e Torino (Festa della Liberazione) : 25 aprile 1945 ",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 26,
+                "domanda": "Data della fucilazione di Mussolini: 28 aprile 1945 ",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 27,
+                "domanda": "Data del suicidio di Hitler: 30 aprile 1945 ",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 28,
+                "domanda": "Data di resa definitiva della Germania alle truppe Alleate: 8 maggio 1945 ",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 29,
+                "domanda": "Data di nascita della Repubblica Italiana a seguito dei reisultati del referendum: domenica 2 giugno 1946 ",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 30,
+                "domanda": "Nascita del primo governo della Repubblica con Alcide De Gasperi : 13 luglio 1946 ",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 31,
+                "domanda": "Data di entrata in vigore della Costituzione Italiana : 1 gennaio 1948 ",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            },
+            {
+                "id": 32,
+                "domanda": "Primo Presidente della Repubblica Italiana : Enrico De Nicola ",
+                "risposta": "T",
+                "numeroRisposteEsatte": 15,
+                "numeroRisposteSbagliate": 12
+            }
+        ]
+    }
+]

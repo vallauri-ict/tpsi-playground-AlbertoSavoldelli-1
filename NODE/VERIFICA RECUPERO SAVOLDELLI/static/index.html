@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Strage</title>
+    <script type="application/javascript" src="jquery.js">
+    </script>
+    <script type="application/javascript" src="index.js">
+    </script>
+    <script type="application/javascript" src="libreria.js">
+    </script>
+    <style>
+        #wrapper {
+            width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        #wrapper h1 {
+            font-size: 26pt;
+            text-align: center;
+        }
+        
+        #wrapper img {
+            width: 400px;
+        }
+        
+        #wrapper h3 {
+            text-align: center;
+            margin-bottom: 6pt;
+        }
+        
+        #wrapper select {
+            width: 150px;
+        }
+        /* ************** */
+        
+        .domande p {
+            text-align: left;
+            margin-left: 15px;
+        }
+        
+        .domande input[type=radio] {
+            margin-left: 12px;
+        }
+        
+        .invia {
+            margin: 15px 4px;
+            width: 100px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: #0dd;
+            font-size: 14pt;
+            color: #222;
+            box-shadow: 3px 3px 4px #444;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <h1> str.a.g.e </h1>
+        <img src="img/urlo.jpg">
+        <h3> Scegli un argomento:</h3>
+        <select id="lstArgomenti">
+		</select>
+        <div class="domande" id="domande">
+            <!-- <h2>Verifica di Storia</h2> -->
+        </div>
+    </div>
+</body>
+
+</html>
