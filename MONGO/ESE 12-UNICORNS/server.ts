@@ -457,3 +457,137 @@ mongoClient.connect(CONNSTRING,function(err,client){
     console.log("Errore nella connessione al database");
   }
 })
+
+// Query 17
+mongoClient.connect(CONNSTRING, function (err, client) {
+   if (!err) {
+     let db = client.db(DBNAME);
+     let collection = db.collection("unicorns");
+     collection.updateOne(
+      {"name":"Aurora"},
+      {"$addToSet":{"loves":"carrot"}, "$inc":{"weight":10}},
+       (err, data) => {
+         if (!err) {
+           console.log("Query 17", data);
+         } else {
+           console.log("Errore esecuzione query " + err.message);
+         }
+         client.close();
+       }
+     );
+   } else {
+     console.log("Errore connessione al db");
+   }
+ });
+
+ //Query 18
+ mongoClient.connect(CONNSTRING,function(err,client){
+  if(!err)
+  {
+    let db = client.db(DBNAME);
+    let collection = db.collection("unicorns");
+    /*"upsert":true se il record da aggiornare non esiste viene automaticamente creato*/
+    collection.updateOne({"name":"Minni"},{"$inc":{"vampires":1}},{"upsert":true},function(err,data){
+      if(!err)
+      {
+        console.log("Query 18",data);
+      }
+      else
+      {
+        console.log("errore esecuzione query " + err.message);
+      }
+      client.close();
+    });
+  }
+  else
+  {
+    console.log("Errore nella connessione al database");
+  }
+})
+
+//Query 19
+mongoClient.connect(CONNSTRING,function(err,client){
+  if(!err)
+  {
+    let db = client.db(DBNAME);
+    let collection = db.collection("unicorns");
+    collection.updateMany({vaccinated : {$exists:false}},{$set:{vaccinated : true}},function(err,data){
+      if(!err)
+      {
+        console.log("Query 19", data);
+      }
+      else
+      {
+        console.log("errore esecuzione query " + err.message);
+      }
+      client.close();
+    });
+  }
+  else
+  {
+    console.log("Errore nella connessione al database");
+  }
+})
+
+//Query 20
+mongoClient.connect(CONNSTRING, function (err, client) {
+  if (!err) {
+    let db = client.db(DBNAME);
+    let collection = db.collection("unicorns");
+    collection.deleteMany(
+     {"loves":{"$all":['grape','carrot']}},
+      (err, data) => {
+        if (!err) {
+          console.log("Query 20", data);
+        } else {
+          console.log("Errore esecuzione query " + err.message);
+        }
+        client.close();
+      }
+    );
+  } else {
+    console.log("Errore connessione al db");
+  }
+});
+
+//Query 21
+mongoClient.connect(CONNSTRING, function (err, client) {
+  if (!err) {
+    let db = client.db(DBNAME);
+    let collection = db.collection("unicorns");
+    /*EQUIVALENTE
+    collection.find({"gender":"f"}).limit(1).sort({"vampires":-1}).project({"name":1,"vampires":1,"_id":0}).toArray(*/
+    collection.find({"gender":"f"}).limit(1).sort({"vampires":-1}).project({"name":1,"vampires":1,"_id":0}).toArray(
+      (err, data) => {
+        if (!err) {
+          console.log("Query 21", data);
+        } else {
+          console.log("Errore esecuzione query " + err.message);
+        }
+        client.close();
+      }
+    );
+  } else {
+    console.log("Errore connessione al db");
+  }
+});
+//Query 22
+mongoClient.connect(CONNSTRING, function (err, client) {
+  if (!err) {
+    let db = client.db(DBNAME);
+    let collection = db.collection("unicorns");
+    /*replaceOne cancella tutti i campi tranne l'id*/
+    collection.replaceOne({"name":"Pluto"},{"name":"Pluto","residenza":"Fossano","loves":["apple"]},
+      (err, data) => {
+        if (!err) {
+          console.log("Query 22", data);
+        } else {
+          console.log("Errore esecuzione query " + err.message);
+        }
+        client.close();
+      }
+    );
+  } else {
+    console.log("Errore connessione al db");
+  }
+});
