@@ -4,5 +4,7 @@ _Il repository è suddivso in cartelle che comprendono i vari esercizi relativi 
 
 * _Node_
 
+* _MongoDb_
+
 
 _Savoldelli Alberto_
