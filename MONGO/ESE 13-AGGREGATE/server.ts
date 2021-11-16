@@ -41,7 +41,7 @@ mongoClient.connect(CONNSTRING,function(err,client){
     console.log("Errore nella connessione al database");
   }
 });
-//query 2
+//query 2--: Utilizzo della funzione di aggregazione $avg
 mongoClient.connect(CONNSTRING,function(err,client){
   if(!err)
   {
@@ -56,6 +56,85 @@ mongoClient.connect(CONNSTRING,function(err,client){
     }}]).toArray();
     req.then(function(data){
         console.log("Query 2:" , data);
+    })
+    req.catch(function(date){
+      console.log("errore esecuzione query " + err.message);
+    })
+    req.finally(function(){
+      client.close();
+    });
+  }
+  else
+  {
+    console.log("Errore nella connessione al database");
+  }
+});
+
+//query 3--Conteggio degli unicorni maschi e degli unicorni femmina
+mongoClient.connect(CONNSTRING,function(err,client){
+  if(!err)
+  {
+    let db = client.db(DBNAME);
+    let collection = db.collection("unicorns");
+    let req=collection.aggregate([
+      {"$match": {"gender":{"$exists":true}}},/*per non mostrare id=null*/
+      {"$group":{_id:"$gender", /*Id indica campo sul quale vengono fatti i gruppi*/
+        "totale":{"$sum":1}/*equivalente del count * */
+    }}]).toArray();
+    req.then(function(data){
+        console.log("Query 3:" , data);
+    })
+    req.catch(function(date){
+      console.log("errore esecuzione query " + err.message);
+    })
+    req.finally(function(){
+      client.close();
+    });
+  }
+  else
+  {
+    console.log("Errore nella connessione al database");
+  }
+});
+
+//query 4--Calcolare il numero medio di vampiri uccisi dagli unicorni femmina e dagli unicorni maschi
+mongoClient.connect(CONNSTRING,function(err,client){
+  if(!err)
+  {
+    let db = client.db(DBNAME);
+    let collection = db.collection("unicorns");
+    let req=collection.aggregate([
+      {"$group":{_id:{"gender":"$gender"},"mediaVampiri":{"$avg":"$vampires"}
+    }}]).toArray();
+    req.then(function(data){
+        console.log("Query 4:" , data);
+    })
+    req.catch(function(date){
+      console.log("errore esecuzione query " + err.message);
+    })
+    req.finally(function(){
+      client.close();
+    });
+  }
+  else
+  {
+    console.log("Errore nella connessione al database");
+  }
+});
+
+//query 5--raggruppare gli unicorni per genere e tipo di pelo
+mongoClient.connect(CONNSTRING,function(err,client){
+  if(!err)
+  {
+    let db = client.db(DBNAME);
+    let collection = db.collection("unicorns");
+    let req=collection.aggregate([
+      {"$match": {"gender":{"$exists":true}}},
+      {"$group":{_id:{"gender":"$gender","hair":"$hair"},"nEsemplari":{"$sum":1}}},
+      {"$sort":{"nEsemplari":-1,"_id":-1}}/*Se il primo campo è pareggio passsa al secondo*/
+    ]).toArray();
+    req.then(function(data){
+        console.log("Query 4:" , data);
     })
     req.catch(function(date){
       console.log("errore esecuzione query " + err.message);
