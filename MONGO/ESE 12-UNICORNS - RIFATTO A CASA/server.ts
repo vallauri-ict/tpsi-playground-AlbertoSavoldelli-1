@@ -338,3 +338,92 @@ mongoClient.connect(CONNSTRING,function(err,client){
       console.log("Errore nella connessione al DB " + err.message);
   }
 });
+
+/*Query 15 - Inserire un nuovo unicorno e, al termine dell’inserimento, cancellarlo nella stessa query*/
+mongoClient.connect(CONNSTRING,function(err,client){
+    if(!err){
+        let db = client.db(DBNAME);
+        let collection = db.collection("unicorns");
+        collection.insertOne({"name":"Alberto","gender":"m","loves":["apple","lemon"]},function(err,data){
+            if(!err){
+                console.log("Query 15 insert",data);
+                collection.deleteMany({"name":"Alberto"},function(err,data){
+                    if(!err)
+                    {
+                        console.log("Query 15 delete",data);
+                    }
+                    else
+                    {
+                        console.log("Errore esecuzione query " + err.message);
+                    }
+                    client.close();
+                });
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+  });
+
+  /*Query 16 - Incrementare di 1 il numero dei vampiri uccisi da Pilot*/
+  mongoClient.connect(CONNSTRING,function(err,client){
+    if(!err){
+        let db = client.db(DBNAME);
+        let collection = db.collection("unicorns");
+        collection.updateOne({"name":"Pilot"},{"$inc":{"vampires":1}},function(err,data){
+            if(!err){
+                console.log("Query 16",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+  });
+
+  /*Query 17 - Aggiungere che l’unicorno Aurora ama anche le carote ed il suo peso è aumentato di 10kg*/
+  mongoClient.connect(CONNSTRING,function(err,client){
+    if(!err){
+        let db = client.db(DBNAME);
+        let collection = db.collection("unicorns");
+        collection.updateOne({"name":"Aurora"},{"$addToSet":{"loves":"carrot"},"$inc":{"weight":10}},function(err,data){
+            if(!err){
+                console.log("Query 17",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+  });
+  /*Query 18- Incrementare di 1 il numero di vampiri uccisi dall’unicorno Pluto. Se il record non esiste crearlo*/
+  mongoClient.connect(CONNSTRING,function(err,client){
+    if(!err){
+        let db = client.db(DBNAME);
+        let collection = db.collection("unicorns");
+        collection.updateOne({"name":"Pluto"},{"$inc":{"vampires":1}},{"upsert":true},function(err,data){
+            if(!err){
+                console.log("Query 18",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+  });
