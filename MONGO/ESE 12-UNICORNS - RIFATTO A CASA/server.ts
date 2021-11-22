@@ -427,3 +427,85 @@ mongoClient.connect(CONNSTRING,function(err,client){
         console.log("Errore nella connessione al DB " + err.message);
     }
   });
+
+  /*Query 19 - Aggiungere il campo vaccinated=false a tutti gli unicorni che non dispongono del campo vaccinated*/
+  mongoClient.connect(CONNSTRING,function(err,client){
+    if(!err){
+        let db = client.db(DBNAME);
+        let collection = db.collection("unicorns");
+        collection.updateMany({vaccinated:{"$exists":false}},{"$set":{"vaccinated":true}},function(err,data){
+            if(!err){
+                console.log("Query 19",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+  });
+
+  /*Query 20 - Rimuovere gli unicorni che amano sia l’uva sia le carote*/
+  mongoClient.connect(CONNSTRING,function(err,client){
+    if(!err){
+        let db = client.db(DBNAME);
+        let collection = db.collection("unicorns");
+        collection.deleteMany({"loves":{"$all":["carrot","grape"]}},function(err,data){
+            if(!err){
+                console.log("Query 20",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+  });
+
+  /*Query 21 - Trovare l’unicorno femmina che ha ucciso il maggior numero di vampiri.
+Restituire nome e numero di vampiri uccisi*/
+mongoClient.connect(CONNSTRING,function(err,client){
+    if(!err){
+        let db = client.db(DBNAME);
+        let collection = db.collection("unicorns");
+        collection.find({"gender":"f"}).sort({"vampires":-1}).limit(1).project({"name":1,"vampires":1}).toArray(function(err,data){
+            if(!err){
+                console.log("Query 21",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+  });
+
+  /*Query 22 - Sostituire completamente il record dell’unicorno Pluto con un nuovo record*/
+  mongoClient.connect(CONNSTRING,function(err,client){
+    if(!err){
+        let db = client.db(DBNAME);
+        let collection = db.collection("unicorns");
+        collection.replaceOne({"name":"Pluto"},{"name":"Aldo","residenza":"Fossano","loves":["grape"]},{"upsert":true},function(err,data){
+            if(!err)
+            {
+                console.log("Query 22",data);
+            }
+            else{
+                console.log("Errore esecuzione query " + err.message);
+            }
+            client.close();
+        });
+    }
+    else{
+        console.log("Errore nella connessione al DB " + err.message);
+    }
+});
