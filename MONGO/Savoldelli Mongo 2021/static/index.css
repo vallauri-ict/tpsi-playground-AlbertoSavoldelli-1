@@ -1,0 +1,70 @@
+body{
+	width:1200px;
+	margin:0 auto;
+	background-color: cornsilk;
+}
+h1{
+	font-size:28pt;
+	margin:10px;
+}
+h2{
+	padding:6px;
+	margin:0;
+}
+
+#List{
+	width:200px;
+	height:200px;
+	margin:0 auto;
+	padding:5px;
+	background-color:lightblue;
+	font-size:13pt;
+	font-weight:bold;
+	border-radius:10px;
+	border:1px solid blue;
+	text-align:center;
+}
+#List select{
+	background-color: cornsilk;
+}
+
+/* ************************ */
+
+#mainWrapper{
+	width:540px;
+	margin:15px 10px;
+	padding:12px;
+	background-color:#ddd;
+	border-radius:10px;
+	border:1px solid blue;
+	float:left;
+}
+
+#mainWrapper checkbox{
+	padding:10px;
+}
+
+button{
+	margin:6px;
+	padding:6px 20px;
+	border-radius:5px;
+}
+
+/* ************************ */
+
+#dettagliWrapper{
+	width:370px;
+	height:360px;
+	margin:15px 10px;
+	padding:20px;
+	background-color:#ddd;
+	border-radius:10px;
+	border:1px solid blue;
+	overflow:auto;
+	float:left;
+}
+
+#dettagliWrapper textarea {
+	margin-top:15px;
+	margin-left:6px
+}
