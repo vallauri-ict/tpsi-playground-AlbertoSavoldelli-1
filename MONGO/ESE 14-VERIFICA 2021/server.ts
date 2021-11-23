@@ -13,18 +13,17 @@ server.listen(port);
 console.log("Server in ascolto sulla porta "+port);
 const CONNSTRING = "mongodb://127.0.0.1:27017";
 const DBNAME = "5B";
-
 //registrazione dei servizi
 dispatcher.addListener("POST","/api/servizio1",function(req,res){
     //quando c'è solo una write si può mettere nell'end
-    let dataStart=req["BODY"].dataStart;
-    let dataEnd=req["BODY"].dataEnd;
+    let dataStart=new Date(req["BODY"].dataStart);
+    let dataEnd=new Date(req["BODY"].dataEnd);
     mongoClient.connect(CONNSTRING,function(err,client){
         if(!err)
         {
           let db = client.db(DBNAME);
-          let collection = db.collection("unicorns");
-          collection.find({"$and":[{"$gte":{"dob":dataStart}},{"$lte":{"dob":dataEnd}}]}
+          let collection = db.collection("vallauri");
+          collection.find({"$and":[{"dob":{"$gte":dataStart,"$lte":dataEnd}}]}
           ).project({"nome":1,"classe":1})
           .toArray(function(err,data){
             if(!err)
