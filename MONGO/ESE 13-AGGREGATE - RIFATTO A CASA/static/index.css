@@ -11,19 +11,18 @@ h2{
 	margin:0;
 }
 
-#categoryList{
+#studentList{
 	width:130px;
 	height:360px;
-	margin:15px 10px;
+	margin:0 auto;
 	padding:5px;
-	background-color:#ffa;
+	background-color:lightblue;
 	font-size:12pt;
 	font-style:italic;
 	font-weight:bold;
 	border-radius:10px;
 	border:1px solid blue;
 	text-align:center;
-	float:left;
 }
 #categoryList select{
 	margin-top:15px;
