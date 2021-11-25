@@ -7,7 +7,10 @@ import * as _mongodb from 'mongodb'
 const mongoClient = _mongodb.MongoClient;
 import {Dispatcher} from "./dispatcher"   
 let dispatcher = new Dispatcher()
-const CONNSTRING = "mongodb://127.0.0.1:27017";
+/*IN LOCALE
+const CONNSTRING = "mongodb://127.0.0.1:27017";*/
+//PER ATLAS
+const CONNSTRING = "mongodb+srv://admin:admin@cluster0.hdanb.mongodb.net/5B?retryWrites=true&w=majority";
 const DBNAME = "5B";
 
 import {HEADERS} from "./headers";

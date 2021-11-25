@@ -21,8 +21,8 @@ dispatcher.addListener("POST","/api/servizio1",function(req,res){
         if(!err)
         {
           let db = client.db(DBNAME);
-          let collection = db.collection("students");
-          collection.find({"classe":"4B"}).project({"nome":1,"classe":1})
+          let collection = db.collection("facts");
+          collection.find().project({"_id":1,"value":1})
           .toArray(function(err,data){
             if(!err)
             {
@@ -44,4 +44,35 @@ dispatcher.addListener("POST","/api/servizio1",function(req,res){
           console.log("Errore nella connessione al database");
         }
       });
+})
+
+dispatcher.addListener("POST","/api/servizio2",function(req,res){
+  let id=req["BODY"].id;
+  let value=req["BODY"].value;
+  mongoClient.connect(CONNSTRING,function(err,client){
+      if(!err)
+      {
+        let db = client.db(DBNAME);
+        let collection = db.collection("facts");
+        collection.updateOne({"_id":id},{$set: {"value": value,"updated_at":new Date()}},function(err,data){
+          if(!err)
+          {
+              res.writeHead(200,HEADERS.json);
+              res.write(JSON.stringify({"ris":"Value aggiornato correttamente"}));
+              res.end();
+          }
+          else
+          {
+              res.writeHead(500,HEADERS.json);
+              res.write("errore di esecuzione query");
+              res.end();
+          }
+          client.close();
+        });
+      }
+      else
+      {
+        console.log("Errore nella connessione al database");
+      }
+    });
 })

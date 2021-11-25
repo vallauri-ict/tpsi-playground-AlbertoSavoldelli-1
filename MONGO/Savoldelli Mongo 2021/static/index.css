@@ -13,8 +13,8 @@ h2{
 }
 
 #List{
-	width:200px;
-	height:200px;
+	width:300px;
+	height:300px;
 	margin:0 auto;
 	padding:5px;
 	background-color:lightblue;
@@ -27,7 +27,29 @@ h2{
 #List select{
 	background-color: cornsilk;
 }
-
+#txtArea{
+	width:400px;
+	margin:0 auto;
+	padding:5px;
+	background-color:lightyellow;
+	font-size:13pt;
+	font-weight:bold;
+	border-radius:10px;
+	border:1px solid blue;
+	text-align:center;
+}
+#txtValue{
+	width:350px;
+	height:120px;
+	margin:0 auto;
+	padding:5px;
+	background-color:lightblue;
+	font-size:13pt;
+	font-weight:bold;
+	border-radius:10px;
+	border:1px solid blue;
+	text-align:center;
+}
 /* ************************ */
 
 #mainWrapper{
