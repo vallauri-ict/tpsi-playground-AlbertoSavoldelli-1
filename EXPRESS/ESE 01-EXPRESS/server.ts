@@ -3,6 +3,13 @@ import * as _fs from "fs";
 import * as _http from "http";
 import * as bodyParser from "body-parser";
 import { inherits } from "util";
+import * as _mongodb from 'mongodb'
+const mongoClient = _mongodb.MongoClient;   
+/*IN LOCALE
+const CONNSTRING = "mongodb://127.0.0.1:27017";*/
+//PER ATLAS
+const CONNSTRING = "mongodb+srv://admin:admin@cluster0.hdanb.mongodb.net/5B?retryWrites=true&w=majority";
+const DBNAME = "5B";
 
 let port:number=1337;
 let app=express();
@@ -54,13 +61,77 @@ app.use("/", function(req, res, next){
 /********************************************************************* */
 //Elenco delle route di risposta al client
 /********************************************************************** */
-app.get("/api/risorsa1",function(req,res,next){
-    let nome=req.query.nome;
-    res.send({"nome":nome})
+app.use("/",function(req,res,next){
+    mongoClient.connect(CONNSTRING,function(err,client){
+        if(err){
+            res.status(503).send("DB connection err");
+        }
+        else{
+            req["client"]=client;/*Per creare vanno usate le quadre*/
+            next();
+
+        }
+    })
 })
-app.post("/api/risorsa1",function(req,res,next){
-    let nome=req.body.nome;
-    res.send({"nome":nome})
+app.get("/api/risorsa1",function(req,res,next){
+    let unicorn=req.query.nome;
+    if(unicorn){
+        let db = req["client"].db(DBNAME) as _mongodb.Db;/*Per tipizzare la nuova variabile per l'intellisense*/
+        let collection = db.collection("unicorns");
+        let request=collection.find({"name":unicorn}).toArray();
+        request.then(function(data){
+            res.send(data)
+        })
+        request.catch(function(date){
+            res.status(503).send("Errore nella query");
+        })
+        request.finally(function(){
+            req["client"].close();
+        });
+    }
+    else{
+        res.status(400).send("Manca il parametro unicornName")
+        req["client"].close();
+    }
+})
+app.patch("/api/risorsa2",function(req,res,next){
+    let unicorn=req.body.nome;
+    let incVampires=req.body.vampiri;
+    if(unicorn && incVampires){
+        let db = req["client"].db(DBNAME) as _mongodb.Db;/*Per tipizzare la nuova variabile per l'intellisense*/
+        let collection = db.collection("unicorns");
+        let request=collection.updateOne({"name":unicorn},{"$inc":{"vampires":incVampires}});
+        request.then(function(data){
+            res.send(data)
+        })
+        request.catch(function(date){
+            res.status(503).send("Errore nella query");
+        })
+        request.finally(function(){
+            req["client"].close();
+        });
+    }
+    else{
+        res.status(400).send("Manca un parametro tra name e vampires");
+        req["client"].close();
+    }
+})
+app.get("/api/risorsa3/:gender/:hair",function(req,res,next){
+    let gender=req.params.gender;
+    let hair=req.params.hair;
+    /*La if sull'esistenza dei parametri non serve perchè se mancano non entra nella route*/
+        let db = req["client"].db(DBNAME) as _mongodb.Db;
+        let collection = db.collection("unicorns");
+        let request = collection.find({ $and: [{ gender: gender }, { hair: hair }] }).toArray();
+        request.then(function(data){
+            res.send(data)
+        })
+        request.catch(function(date){
+            res.status(503).send("Errore nella query");
+        })
+        request.finally(function(){
+            req["client"].close();
+        });
 })
 /********************************************************************** */
 //Default route (risorse non trovate ) e route di gestione degli errori
@@ -72,4 +143,10 @@ app.use("/", function (req, res, next) {
     else{
         res.send(paginaErrore);
     }
+});
+/* *******************************************************************/
+//route di gestione degli errori
+/*********************************************************************/
+app.use((err, req, res, next) => {
+    console.log("Errore codice server: " + err.message);
 });
