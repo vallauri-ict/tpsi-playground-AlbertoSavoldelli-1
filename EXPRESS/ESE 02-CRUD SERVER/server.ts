@@ -64,15 +64,16 @@ app.use("/", function(req, res, next){
 //Elenco delle route di risposta al client
 /********************************************************************** */
 //Middleware di apertura della connessione
-app.use("/", (req, res, next) => {
-    mongoClient.connect(CONNSTRING, (err, client) => {
-      if (err) {
-        res.status(503).send("Db connection error");
-      } else {
-        console.log("Connection made");
+app.use("/", function (req, res, next) {
+  mongoClient.connect(CONNSTRING, function (err, client) {
+     if (err) {
+        res.status(503).send("Errore nella connessione al DB");
+     }
+     else {
+        console.log("Connected succesfully");
         req["client"] = client;
         next();
-      }
+     }
     });
   });
 
@@ -106,7 +107,7 @@ app.use("/", (req, res, next) => {
     let db = req["client"].db(DBNAME) as mongodb.Db;
     let collection = db.collection(currentCollection);
     if(!id){
-      let request = collection.find().project({"_id":1,"name":1}).toArray();
+      let request = collection.find().toArray();
       request.then((data) => {
         res.send(data);
         });
@@ -147,6 +148,55 @@ app.post("/api/*",function(req,res,next){
       req["client"].close();
   })
 });
+
+app.delete("/api/*", (req, res, next) => {
+  let db = req["client"].db(DBNAME) as mongodb.Db;
+  let collection = db.collection(currentCollection);
+  let _id = new mongodb.ObjectId(id);
+  let request = collection.deleteOne({"_id":_id});
+  request.then((data) => {
+    res.send(data);
+    });
+    request.catch((err) => {
+    res.status(503).send("Sintax error in the query");
+    });
+    request.finally(() => {
+    req["client"].close();
+  });
+})
+
+app.patch("/api/*", (req, res, next) => {
+  let db = req["client"].db(DBNAME) as mongodb.Db;
+  let collection = db.collection(currentCollection);
+  let _id = new mongodb.ObjectId(id);
+  let request = collection.updateOne({"_id":_id},{"$set":req["body"]});
+  request.then((data) => {
+    res.send(data);
+    });
+    request.catch((err) => {
+    res.status(503).send("Sintax error in the query");
+    });
+    request.finally(() => {
+    req["client"].close();
+  });
+})
+
+app.put("/api/*", (req, res, next) => {
+  let db = req["client"].db(DBNAME) as mongodb.Db;
+  let collection = db.collection(currentCollection);
+  let _id = new mongodb.ObjectId(id);
+  let request = collection.replaceOne({"_id":_id},req["body"]);
+  request.then((data) => {
+    res.send(data);
+    });
+    request.catch((err) => {
+    res.status(503).send("Sintax error in the query");
+    });
+    request.finally(() => {
+    req["client"].close();
+  });
+})
+
 /********************************************************************** */
 //Default route (risorse non trovate ) e route di gestione degli errori
 /********************************************************************** */

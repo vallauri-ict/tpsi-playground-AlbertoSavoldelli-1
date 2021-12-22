@@ -29,7 +29,7 @@ $(document).ready(function() {
     currentCollection = $(this).val();
     let request = inviaRichiesta("GET", "/api/"+currentCollection)
     request.fail(errore);
-    request.done(function aggiornaTabella(data){
+    request.done(function(data){
       //console.log(data);
       divIntestazione.find("strong").eq(0).text(currentCollection);
       divIntestazione.find("strong").eq(1).text(data.length);
@@ -48,61 +48,100 @@ $(document).ready(function() {
         let td = $("<td>");
         td.appendTo(tr);
         td.text(item._id);
-        td.prop("id",item._id);
+        td.prop("_id",item._id);
+        td.prop("method","get");
         td.on("click", visualizzaDettagli)
 
         td = $("<td>");
         td.appendTo(tr);
         td.text(item.name);
-        td.prop("id",item._id);
+        td.prop("_id",item._id);
+        td.prop("method","get");
         td.on("click", visualizzaDettagli)
 
         td = $("<td>");
         td.appendTo(tr);
-        for (let i = 0; i < 3; i++) {
-          $("<div>").appendTo(td); 
-        }
+        
+       
+        $("<div>").appendTo(td).prop({"_id":item._id , "method":"patch"}).on("click",visualizzaDettagli); 
+
+        $("<div>").appendTo(td).prop({"_id":item._id , "method":"put"}).on("click",visualizzaDettagli); 
+
+        $("<div>").appendTo(td).prop("_id",item._id).on("click",elimina);
+
       }
     });
   });
-    
-  function visualizzaDettagli(){
-    let request = inviaRichiesta("GET","/api/"+currentCollection +"/"+ $(this).prop("id"))
+  function elimina(){
+    let request=inviaRichiesta("delete","/api/"+currentCollection+"/"+$(this).prop("_id"))
     request.fail(errore);
-    request.done(function(data){
-      console.log(data);
-      let content = "";
-      for (let key in data) {
-        content += "<strong>" + key + ":</strong> " + data[key] + "<br>";
-    }
+    request.done(function(){
+      alert("Eliminato correttamente");
+      aggiorna();
     })
   }
 
-  $("#btnAdd").on("click",function(){
-    divDettagli.empty();
-    let textarea = $("<textarea>").val("{ }").appendTo(divDettagli);
-
-    let btnInvia = $("<button>").text("INVIA").appendTo(divDettagli);
-    btnInvia.on("click",function(){
-        let param = "";
-        try 
-        {
-            param = JSON.parse(textarea.val());
-        } 
-        catch (error)
-        {
-            alert("Errore: JSON non valido");
-            return;
+  function visualizzaDettagli(){
+    let method = $(this).prop("method").toUpperCase();
+    let id = $(this).prop("_id");
+    let request = inviaRichiesta("GET","/api/"+currentCollection +"/"+id)
+    request.fail(errore);
+    request.done(function(data){
+      console.log(data);
+      if(method == "GET"){
+        let content = "";
+        for (const key in data) {
+          content += "<strong>"+ key +"</strong> : " + data[key] + "<br>";
+          divDettagli.html(content);
         }
+      }
+      else{
+        divDettagli.empty();
+        let txtArea = $("<textarea>"); 
+        delete(data._id);
+        txtArea.val(JSON.stringify(data, null, 2));
+        txtArea.appendTo(divDettagli);
+        txtArea.css("height",txtArea.get(0).scrollHeight);
+        console.log(txtArea.get(0).scrollHeight);
+        visualizzaBtnInvia(method, id);
+      }
+    })
+  }
 
-        let request = inviaRichiesta("post","/api/" + currentCollection, param);
-        request.fail(errore);
-        request.done(function(data){
-            alert("Inserimento eseguito correttamente");
-            divDettagli.empty();
-            divCollections.trigger("click","input[type=radio]");
-        });
-    });
+  function visualizzaBtnInvia(method, id=""){
+    let btnInvia = $("<button>");
+    btnInvia.text("Invia");
+    btnInvia.appendTo(divDettagli);
+    btnInvia.on("click", function(){
+      let param = "";
+      try {
+        param = JSON.parse(divDettagli.children("textarea").val());
+      } catch {
+        alert("Json non valido");
+        return;
+      }
+
+      let request = inviaRichiesta(method, "/api/"+currentCollection+"/"+id, param);
+      request.fail(errore);
+      request.done(() => {
+        alert("operazione eseguita correttamente");
+        divDettagli.empty();    
+        aggiorna();
+      });
+    })
+  }
+  $("#btnAdd").on("click", function(){
+    divDettagli.empty();
+    let txtArea = $("<textarea>");
+    txtArea.val("{ }");
+    txtArea.appendTo(divDettagli);
+    visualizzaBtnInvia("POST");
   });
+  function aggiorna(){
+      var event=jQuery.Event('click');
+      event.target=divCollections.find('input[type=radio]:checked')[0];
+      divCollections.trigger(event);
+      divDettagli.empty();
+  }
 
 });
