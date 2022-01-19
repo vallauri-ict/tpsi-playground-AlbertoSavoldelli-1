@@ -5,14 +5,16 @@ import * as body_parser from "body-parser";
 import { inherits } from "util";
 import HEADERS from "./headers.json";
 import * as mongodb from "mongodb";
-
+import cors from "cors";
 const mongoClient = mongodb.MongoClient;
-const CONNECTION_STRING =
-  "mongodb+srv://admin:admin@cluster0.hdanb.mongodb.net/5B?retryWrites=true&w=majority";
+const CONNECTION_STRING = process.env.MONGODB_URI ||"mongodb+srv://admin:admin@cluster0.hdanb.mongodb.net/5B?retryWrites=true&w=majority";
+//const CONNECTION_STRING = process.env.MONGODB_URI;
+// const CONNECTION_STRING =
+//   "mongodb+srv://admin:admin@cluster0.hdanb.mongodb.net/5B?retryWrites=true&w=majority";
 const DB_NAME = "recipeBook";
 
 
-let port : number = 1337;
+let port = parseInt(process.env.PORT) || 1337
 let app = express();
 
 let server = http.createServer(app);
@@ -21,6 +23,23 @@ server.listen(port,function(){
     console.log("Server in ascolto sulla porta " + port)
     init();
 });
+
+const whitelist = ["http://localhost:4200", "http://localhost:1337","https://savoldelli-alberto-crud-server.herokuapp.com/"];
+const corsOptions = {
+ origin: function(origin, callback) {
+ if (!origin)
+ return callback(null, true);
+ if (whitelist.indexOf(origin) === -1) {
+ var msg = 'The CORS policy for this site does not ' +
+ 'allow access from the specified Origin.';
+ return callback(new Error(msg), false);
+ }
+ else
+ return callback(null, true);
+ },
+ credentials: true
+};
+app.use("/", cors(corsOptions));
 
 let paginaErrore="";
 function init(){
