@@ -24,7 +24,12 @@ server.listen(port,function(){
     init();
 });
 
-const whitelist = ["http://localhost:4200", "http://localhost:1337","https://savoldelli-alberto-crud-server.herokuapp.com/"];
+const whitelist = [
+  "https://savoldelli-alberto-crud-server.herokuapp.com/",
+  "http://savoldelli-alberto-crud-server.herokuapp.com/",
+ "http://localhost:1337",
+ "http://localhost:4200"
+ ];
 const corsOptions = {
  origin: function(origin, callback) {
  if (!origin)
