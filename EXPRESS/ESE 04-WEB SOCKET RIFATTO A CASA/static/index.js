@@ -1,4 +1,3 @@
-"use strict"
 $(document).ready(function() {
     let user = {"username":"","room":""};
     let serverSocket;
@@ -35,7 +34,7 @@ $(document).ready(function() {
         // 2b) ricezione della risposta
         serverSocket.on('message_notify', function(data) {		
             data = JSON.parse(data);
-            visualizza(data.from, data.message, data.date,data.img);
+            visualizza(data.from, data.message, data.date);
         })
 
         // 3) disconnessione
@@ -62,24 +61,16 @@ $(document).ready(function() {
     });
 
 
-    function visualizza(username, message, date,img) {
-        console.log(img);
+    function visualizza(username, message, date) {
         let wrapper = $("#wrapper")
         let container = $("<div class='message-container'></div>");
         container.appendTo(wrapper);
 
         // username e date
         date = new Date(date);
-        if(img!=""){
-            let userImg=$("<img>").prop("src","./img/"+img)
-            userImg.css("width","20px")
-            userImg.appendTo(container);
-        }
         let mittente = $("<small class='message-from'>" + username + " @" 
 		                  + date.toLocaleTimeString() + "</small>");
         mittente.appendTo(container);
-        
-
 
         // messaggio
         message = $("<p class='message-data'>" + message + "</p>");

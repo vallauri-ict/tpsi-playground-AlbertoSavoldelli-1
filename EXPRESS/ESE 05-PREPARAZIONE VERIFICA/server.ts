@@ -1,108 +1,104 @@
 "use strict";
-import http from 'http';
-import colors from 'colors';
+import http from "http";
+import colors from "colors";
+import express from "express";
 import fs from "fs";
 import body_parser from "body-parser";
 import * as mongodb from "mongodb";
+const app = express()
+const httpServer = http.createServer(app);
+import {Server, Socket} from "socket.io";// import solo l‟oggetto Server
+const io = new Server(httpServer);
+import { json } from 'body-parser';
 import fileUpload, { UploadedFile } from "express-fileupload";
 import ENVIRONMENT from "./environment.json";
-
-import express from "express";
-const app = express();
-const httpServer = http.createServer(app);
-
-import {Server, Socket} from 'socket.io'; // import solo l‟oggetto Server
-import { json } from 'body-parser';
-const io = new Server(httpServer);
-
 const mongoClient = mongodb.MongoClient;
 const DB_NAME = "5B";
 
 const PORT = 1337
-/************** HTTP ********* */
-//**********************
-//elenco delle routes di tipo middleware
-//**********************
-httpServer.listen(PORT, function () {
-	console.log("Server in ascolto sulla porta " + PORT)
-	init();
-  });
-  
-  let paginaErrore = "";
-  function init() {
-	fs.readFile("./static/error.html", function (err, data) {
-	  if (!err) {
-		paginaErrore = data.toString();
-	  }
-	  else {
-		paginaErrore = "<h2>Risorsa non trovata</h2>";
-	  }
-	});
-  }
-  
-  // 1.log 
-  app.use("/", function (req, res, next) {
-	console.log("---->" + req.method + ":" + req.originalUrl);
-	next();
-  });
-  
-  // 2.static route
-  //il next lo fa automaticamente quando non trova la risorsa
-  app.use("/", express.static("./static"));
-  
-  // 3.route lettura parametri post con impostazione del limite immagini base64
-  app.use("/", body_parser.json({"limit":"10mb"}));
-  app.use("/", body_parser.urlencoded({ "extended": true, "limit":"10mb" }));
-  
-  // 4.log parametri
-  app.use("/", function (req, res, next) {
-	if (Object.keys(req.query).length > 0) {
-	  console.log("Parametri GET: ", req.query);
-	}
-	if (Object.keys(req.body).length > 0) {
-	  console.log("Parametri BODY: ", req.body);
-	}
-	next();
-  })
-  
-  // 5. binary fileUpload
-  app.use(fileUpload({
-	"limits ": { "fileSize ": (10 * 1024 * 1024) } // 10 MB
-  }));
-  
-  
-//elenco delle routes di risposta al client
-// middleware di apertura della connessione
-app.use("/", (req, res, next) => {
-mongoClient.connect(process.env.MONGODB_URI || ENVIRONMENT.CONNECTION_STRING, (err, client) => {
-	if (err) {
-	res.status(503).send("Db connection error");
-	} else {
-	console.log("Connection made");
-	req["client"] = client;
-	next();
-	}
-	});
+
+httpServer.listen(PORT, function() {
+    console.log('Server listening on port ' + PORT);
 });
 
-// listener specifici: 
-//listener GET
-app.get("/api/images", (req, res, next) => {
-	let db = req["client"].db(DB_NAME) as mongodb.Db;
-	let collection = db.collection("images");
-	let request = collection.find().toArray();
-	request.then((data) => {
-	  res.send(data);
-	});
-	request.catch((err) => {
-	  res.status(503).send("Sintax error in the query");
-	});
-	request.finally(() => {
-	  req["client"].close();
-	});
+let paginaErrore="";
+function init(){
+    fs.readFile("./static/error.html",function(err, data){
+        if(!err){
+            paginaErrore = data.toString();
+        }
+        else{
+            paginaErrore = "<h2>Risorsa non trovata</h2>";
+        }
+    });
+}
+
+//****************************************************************
+//elenco delle routes di tipo middleware
+//****************************************************************
+// 1.log 
+app.use("/",function(req, res, next){
+    console.log("---->" + req.method + ":"+ req.originalUrl);
+    next();
+});
+// 2.static route
+//il next lo fa automaticamente quando non trova la risorsa
+app.use("/", express.static("./static"));
+
+// 3.route lettura parametri post
+app.use("/", body_parser.json());
+app.use("/", body_parser.urlencoded({"extended":true}));
+
+// 4.log parametri
+app.use("/", function(req, res, next){
+    if(Object.keys(req.query).length > 0){
+        console.log("Parametri GET: ",req.query);
+    }
+    if(Object.keys(req.body).length > 0){
+        console.log("Parametri BODY: ",req.body);
+    }
+    next();
+})
+// 5. binary fileUpload
+app.use(fileUpload({
+  "limits ": { "fileSize ": (10 * 1024 * 1024) } // 10 MB
+}));
+
+//****************************************************************
+//elenco delle routes di risposta al client
+//****************************************************************
+// middleware di apertura della connessione
+app.use("/api/", (req, res, next) => {
+	mongoClient.connect(process.env.MONGODB_URI || ENVIRONMENT.CONNECTION_STRING, function (err, client) {
+      if (err) {
+        res.status(503).send("Db connection error");
+      } 
+	  else {
+        console.log("Connection made");
+        req["client"] = client;
+        next();
+      }
+    });
+  });
+
+  // listener specifici: 
+  //listener GET
+  app.get("/api/elenco", (req, res, next) => {
+    let db = req["client"].db(DB_NAME) as mongodb.Db;
+    let collection = db.collection("imagesCasa");
+    let request = collection.find().toArray();
+    request.then((data) => {
+      res.send(data);
+      });
+      request.catch((err) => {
+      res.status(503).send("Sintax error in the query");
+      });
+      request.finally(() => {
+      req["client"].close();
+    });
   })
 
-/*********** gestione web socket ********* */
+/************************* gestione web socket ********************** */
 let users = [];
 
 /* in corrispondenza della connessione di un client,
@@ -112,11 +108,11 @@ let users = [];
   'user' contenente tutte le informazioni relative al singolo utente  */
 
 io.on('connection', function(clientSocket) {
-	let user = {} as {username:string, socket:Socket, room:string};
+	let user = {}as {username:string,socket:Socket,room:string};
 
 	// 1) ricezione username
 	clientSocket.on('login', function(userInfo) {
-		userInfo = JSON.parse(userInfo);
+		userInfo=JSON.parse(userInfo)
 		// controllo se user esiste già
 		let item = users.find(function(item) {
 			return (item.username == userInfo.username)
@@ -126,14 +122,14 @@ io.on('connection', function(clientSocket) {
 		}
 		else{
 			user.username = userInfo.username;
-			user.room = userInfo.room;
+			user.room=userInfo.room;
 			user.socket = clientSocket;
 			users.push(user);
 			clientSocket.emit("loginAck", "OK")
 			log('User ' + colors.yellow(user.username) +
 						" (sockID=" + user.socket.id + ') connected!');
-			//inserisco username nella stanza richiesta 
-			this.join(user.room);
+			log(user.room)
+			this.join(user.room)
 		}
 	});
 
@@ -142,15 +138,38 @@ io.on('connection', function(clientSocket) {
 		log('User ' + colors.yellow(user.username) + 
 		          " (sockID=" + user.socket.id + ') sent ' + colors.green(msg))
 		// notifico a tutti i socket (mittente compreso) il messaggio ricevuto 
-		let response = {
-			'from': user.username,
-			'message': msg,
-			'date': new Date()
-		}
-		//con questa sintassi spedisco a tutti compreso il mittente
-		////io.sockets.emit('message_notify', JSON.stringify(response));
-		//con questa sintassi spedisco solo alla stanza richiesta
-		io.to(user.room).emit('message_notify', JSON.stringify(response));
+		let img="";
+		mongoClient.connect(process.env.MONGODB_URI || ENVIRONMENT.CONNECTION_STRING, function (err, client) {
+			if(!err){
+				let db = client.db(DB_NAME) as mongodb.Db;
+				let collection = db.collection("imagesCasa");
+				let request = collection.findOne({"username":user.username});
+				request.then((data) => {
+					if(data==null){
+						img=""
+					}
+					else{
+						img=data.img;
+					}
+					let response = {
+						'from': user.username,
+						"img":img,
+						'message': msg,
+						'date': new Date()
+					}
+					io.to(user.room).emit('message_notify', JSON.stringify(response));
+				  });
+				  request.catch((err) => {
+					  log("NOT FOUND")
+				  });
+				  request.finally(() => {
+				  	client.close();
+				});
+				
+			}
+		})
+
+		
 	});
 
     // 3) disconnessione dell'utente
